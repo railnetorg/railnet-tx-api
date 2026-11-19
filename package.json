@@ -1,0 +1,7 @@
+{
+  "name": "railnet-tx-api",
+  "private": true,
+  "dependencies": {
+    "viem": "2.57.7"
+  }
+}
