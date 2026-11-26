@@ -7,7 +7,8 @@ and nothing else: it reads no chain, holds no key and keeps no state.
 **Verify every response before signing.** The calldata is deterministic: the response is a
 reference to check against, not a source of trust.
 
-1. Always send your own `salt`, 32 random bytes per transaction.
+1. Send your own `salt` with every deposit and redeem: 32 random bytes, new for each
+   transaction. It is required, and the service never draws one.
 2. If you were given two base URLs, they are two independent deployments. Send the same
    request to both and reject on any difference or missing answer.
 3. Rebuild the transaction locally from the request you sent and compare it byte for byte
@@ -49,7 +50,7 @@ Returns `200` with:
 | `to` | [Address](#types) | The token for an approve, the Conduit for a deposit or a redeem. Written as you sent it. |
 | `data` | string | The calldata, lowercase hex. |
 | `value` | `"0"` | Always `"0"`. |
-| `salt` | [Bytes32](#types) | The salt the transaction was built with. Deposit and redeem only. |
+| `salt` | [Bytes32](#types) | The salt you sent. Deposit and redeem only. |
 
 **Approve 1 USDC**
 
@@ -81,7 +82,7 @@ receives the Conduit shares. Any other sender makes it revert.
 | `sender` | [Address](#types) | yes | The account that sends the transaction and receives the Conduit shares. |
 | `vehicle` | [Address](#types) | no | The Conduit's Vehicle, `conduit.getVehicle()`. Left out, it is the one the service holds for the Conduit. |
 | `minOutput` | [Uint256](#types) | no | A floor in Vehicle shares. Left out, it is `"0"`, which sets no floor. |
-| `salt` | [Bytes32](#types) | no | Yours, 32 random bytes per transaction. Left out, one is drawn at random and the response cannot be verified or compared. |
+| `salt` | [Bytes32](#types) | yes | Yours, 32 random bytes, new for each transaction. The same request always returns the same bytes. |
 
 Returns `200` with:
 
@@ -90,7 +91,7 @@ Returns `200` with:
 | `to` | [Address](#types) | The token for an approve, the Conduit for a deposit or a redeem. Written as you sent it. |
 | `data` | string | The calldata, lowercase hex. |
 | `value` | `"0"` | Always `"0"`. |
-| `salt` | [Bytes32](#types) | The salt the transaction was built with. Deposit and redeem only. |
+| `salt` | [Bytes32](#types) | The salt you sent. Deposit and redeem only. |
 
 **Deposit 1 USDC, vehicle and minOutput left out**
 
@@ -140,7 +141,7 @@ the transaction.
 | `shares` | [Uint256](#types) | yes | The Conduit shares to redeem, in their smallest unit. |
 | `receiver` | [Address](#types) | yes | The account that is paid. |
 | `minOutput` | [Uint256](#types) | yes | A floor in the token, before the Conduit's fees. `"0"` sets none. |
-| `salt` | [Bytes32](#types) | no | Yours, 32 random bytes per transaction. Left out, one is drawn at random and the response cannot be verified or compared. |
+| `salt` | [Bytes32](#types) | yes | Yours, 32 random bytes, new for each transaction. The same request always returns the same bytes. |
 
 Returns `200` with:
 
@@ -149,7 +150,7 @@ Returns `200` with:
 | `to` | [Address](#types) | The token for an approve, the Conduit for a deposit or a redeem. Written as you sent it. |
 | `data` | string | The calldata, lowercase hex. |
 | `value` | `"0"` | Always `"0"`. |
-| `salt` | [Bytes32](#types) | The salt the transaction was built with. Deposit and redeem only. |
+| `salt` | [Bytes32](#types) | The salt you sent. Deposit and redeem only. |
 
 **Redeem about 0.5 Conduit share to USDC**
 

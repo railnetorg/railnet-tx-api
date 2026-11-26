@@ -10,7 +10,8 @@ info:
     **Verify every response before signing.** The calldata is deterministic: the response is a
     reference to check against, not a source of trust.
 
-    1. Always send your own `salt`, 32 random bytes per transaction.
+    1. Send your own `salt` with every deposit and redeem: 32 random bytes, new for each
+       transaction. It is required, and the service never draws one.
     2. If you were given two base URLs, they are two independent deployments. Send the same
        request to both and reject on any difference or missing answer.
     3. Rebuild the transaction locally from the request you sent and compare it byte for byte
@@ -103,7 +104,7 @@ paths:
                   salt: "0xfd998ee5f4a1caddeefa25ce83121601e5326a0c70fe6601c3a95f71a67770c4"
       responses:
         "200":
-          description: The transaction to sign, and the salt it was built with.
+          description: The transaction to sign, and the salt you sent.
           content:
             application/json:
               schema:
@@ -157,7 +158,7 @@ paths:
                   salt: "0x1483afb0a95e65f56386f4fb6de2d64f3802d6382a5ebec628c6ef544c070035"
       responses:
         "200":
-          description: The transaction to sign, and the salt it was built with.
+          description: The transaction to sign, and the salt you sent.
           content:
             application/json:
               schema:
@@ -213,7 +214,7 @@ components:
           description: The allowance, in the token's smallest unit.
     DepositRequest:
       type: object
-      required: [conduit, token, amount, sender]
+      required: [conduit, token, amount, sender, salt]
       properties:
         conduit:
           $ref: "#/components/schemas/Address"
@@ -235,10 +236,10 @@ components:
           description: A floor in Vehicle shares. Left out, it is `"0"`, which sets no floor.
         salt:
           $ref: "#/components/schemas/Bytes32"
-          description: Yours, 32 random bytes per transaction. Left out, one is drawn at random and the response cannot be verified or compared.
+          description: Yours, 32 random bytes, new for each transaction. The same request always returns the same bytes.
     RedeemRequest:
       type: object
-      required: [conduit, token, shares, receiver, minOutput]
+      required: [conduit, token, shares, receiver, minOutput, salt]
       properties:
         conduit:
           $ref: "#/components/schemas/Address"
@@ -257,7 +258,7 @@ components:
           description: A floor in the token, before the Conduit's fees. `"0"` sets none.
         salt:
           $ref: "#/components/schemas/Bytes32"
-          description: Yours, 32 random bytes per transaction. Left out, one is drawn at random and the response cannot be verified or compared.
+          description: Yours, 32 random bytes, new for each transaction. The same request always returns the same bytes.
     Transaction:
       type: object
       required: [to, data, value]
@@ -274,7 +275,7 @@ components:
           description: Always `"0"`.
         salt:
           $ref: "#/components/schemas/Bytes32"
-          description: The salt the transaction was built with. Deposit and redeem only.
+          description: The salt you sent. Deposit and redeem only.
     Error:
       type: object
       required: [error]
