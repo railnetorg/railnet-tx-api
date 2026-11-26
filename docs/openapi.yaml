@@ -85,9 +85,10 @@ paths:
               $ref: "#/components/schemas/DepositRequest"
             examples:
               minimal:
-                summary: Deposit 1 USDC, vehicle and minOutput left out
+                summary: Deposit 1 USDC, minOutput left out
                 value:
                   conduit: "0x6b2bc4d0614d7744dc5f71b7a2555a9cef2535d9"
+                  vehicle: "0xce532ed9019010657840a1484895ec00d5693a48"
                   token: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
                   amount: "1000000"
                   sender: "0xde6308e382dca8b725bc66a0575304840e08d9a8"
@@ -111,7 +112,7 @@ paths:
                 $ref: "#/components/schemas/Transaction"
               examples:
                 minimal:
-                  summary: Deposit 1 USDC, vehicle and minOutput left out
+                  summary: Deposit 1 USDC, minOutput left out
                   value:
                     to: "0x6b2bc4d0614d7744dc5f71b7a2555a9cef2535d9"
                     data: "0x50bb3af40000000000000000000000000000000000000000000000000000000000000060000000000000000000000000de6308e382dca8b725bc66a0575304840e08d9a8fd998ee5f4a1caddeefa25ce83121601e5326a0c70fe6601c3a95f71a67770c40000000000000000000000006b2bc4d0614d7744dc5f71b7a2555a9cef2535d90000000000000000000000006b2bc4d0614d7744dc5f71b7a2555a9cef2535d9000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb4800000000000000000000000000000000000000000000000000000000000f4240000000000000000000000000ce532ed9019010657840a1484895ec00d5693a4800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a33d32c6331dd73760fa94e36f17cb757dd0f74cfac71e8386176cff485b2b7700000000000000000000000000000000000000000000000000000000000001200000000000000000000000000000000000000000000000000000000000000000"
@@ -214,11 +215,14 @@ components:
           description: The allowance, in the token's smallest unit.
     DepositRequest:
       type: object
-      required: [conduit, token, amount, sender, salt]
+      required: [conduit, vehicle, token, amount, sender, salt]
       properties:
         conduit:
           $ref: "#/components/schemas/Address"
           description: The Conduit to deposit into.
+        vehicle:
+          $ref: "#/components/schemas/Address"
+          description: The Conduit's Vehicle, `conduit.getVehicle()`. It is the asset of the deposit's output.
         token:
           $ref: "#/components/schemas/Address"
           description: The Conduit's asset, `conduit.asset()`.
@@ -228,9 +232,6 @@ components:
         sender:
           $ref: "#/components/schemas/Address"
           description: The account that sends the transaction and receives the Conduit shares.
-        vehicle:
-          $ref: "#/components/schemas/Address"
-          description: The Conduit's Vehicle, `conduit.getVehicle()`. Left out, it is the one the service holds for the Conduit.
         minOutput:
           $ref: "#/components/schemas/Uint256"
           description: A floor in Vehicle shares. Left out, it is `"0"`, which sets no floor.

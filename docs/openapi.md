@@ -77,10 +77,10 @@ receives the Conduit shares. Any other sender makes it revert.
 | Field | Type | Required | Description |
 |---|---|---|---|
 | `conduit` | [Address](#types) | yes | The Conduit to deposit into. |
+| `vehicle` | [Address](#types) | yes | The Conduit's Vehicle, `conduit.getVehicle()`. It is the asset of the deposit's output. |
 | `token` | [Address](#types) | yes | The Conduit's asset, `conduit.asset()`. |
 | `amount` | [Uint256](#types) | yes | The amount to deposit, in the token's smallest unit. |
 | `sender` | [Address](#types) | yes | The account that sends the transaction and receives the Conduit shares. |
-| `vehicle` | [Address](#types) | no | The Conduit's Vehicle, `conduit.getVehicle()`. Left out, it is the one the service holds for the Conduit. |
 | `minOutput` | [Uint256](#types) | no | A floor in Vehicle shares. Left out, it is `"0"`, which sets no floor. |
 | `salt` | [Bytes32](#types) | yes | Yours, 32 random bytes, new for each transaction. The same request always returns the same bytes. |
 
@@ -93,12 +93,12 @@ Returns `200` with:
 | `value` | `"0"` | Always `"0"`. |
 | `salt` | [Bytes32](#types) | The salt you sent. Deposit and redeem only. |
 
-**Deposit 1 USDC, vehicle and minOutput left out**
+**Deposit 1 USDC, minOutput left out**
 
 ```bash
 curl -s -X POST "$TX_API_URL/v1/deposit" \
   -H "x-api-key: $TX_API_KEY" \
-  -d '{"conduit":"0x6b2bc4d0614d7744dc5f71b7a2555a9cef2535d9","token":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","amount":"1000000","sender":"0xde6308e382dca8b725bc66a0575304840e08d9a8","salt":"0xfd998ee5f4a1caddeefa25ce83121601e5326a0c70fe6601c3a95f71a67770c4"}'
+  -d '{"conduit":"0x6b2bc4d0614d7744dc5f71b7a2555a9cef2535d9","vehicle":"0xce532ed9019010657840a1484895ec00d5693a48","token":"0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48","amount":"1000000","sender":"0xde6308e382dca8b725bc66a0575304840e08d9a8","salt":"0xfd998ee5f4a1caddeefa25ce83121601e5326a0c70fe6601c3a95f71a67770c4"}'
 ```
 
 ```json
